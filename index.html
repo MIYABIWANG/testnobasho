@@ -32,8 +32,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 10px 32px 0 #f7e6d2;
       margin-top: 36px;
+      /* 無陰影、無模糊，外圈純色 */
     }
     .timer-circle-inner {
       width: 230px;
@@ -43,7 +43,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 16px #ffe9d6 inset;
+      /* 無陰影、無模糊 */
     }
     #timeDisplay {
       width: 100%;
@@ -81,7 +81,6 @@
       color: #232b36;
       font-weight: 700;
       font-size: 1.15em;
-      box-shadow: 0 2px 12px #faefdf;
       cursor: pointer;
       transition: background 0.13s, transform 0.13s;
       letter-spacing: 0.03em;
@@ -124,7 +123,6 @@
       background: #FCEADB;
       color: #232b36;
       font-weight: 700;
-      box-shadow: 0 2px 10px #fceadb;
       cursor: pointer;
       transition: background 0.15s, transform 0.15s;
     }
@@ -209,7 +207,6 @@ let totalSeconds = 0;
 let remainingSeconds = 0;
 let isPaused = false;
 
-// 保證圓圈大小一直都一樣
 function startTimer(minutes, type = '練習') {
     clearInterval(timerInterval);
     totalSeconds = minutes * 60;
