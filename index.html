@@ -15,111 +15,100 @@ html, body {
 body {
   font-family: 'Noto Sans TC', sans-serif;
 }
-
 .timer-root {
-  /* 讓內容鋪滿 Notion 區塊，但最大不超過420px，左右置中 */
   width: 100%;
-  max-width: 420px;
+  max-width: 460px;
   margin: 0 auto;
-  padding: 0 8px;
+  padding: 0 12px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 讓內容不會集中在很上面 */
-  justify-content: flex-start;
 }
-
 .timer-circle-outer {
   width: 100%;
   aspect-ratio: 1/1;
-  background: conic-gradient(#FDE2B3 0% 100%, #f8f8f8 100%);
+  max-width: 340px;
+  margin: 36px auto 0 auto;
+  background: conic-gradient(#FFE5CC var(--progress, 0%), #FFE5CC 0 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 32px #f8e3c2;
-  margin-top: 36px;
+  box-shadow: 0 6px 32px 0 #f5e2d5, 0 2px 12px #ffe5cc;
+  position: relative;
 }
-
 .timer-circle-inner {
-  width: 68%;
+  width: 74%;
   aspect-ratio: 1/1;
   background: #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 16px #f8e3c2 inset;
+  box-shadow: 0 1.5px 13px #ffe5cc inset;
 }
-
 #timeDisplay {
   width: 100%;
   text-align: center;
-  font-size: 2.7em;
-  font-weight: bold;
-  color: #232323;
+  font-size: 2.8em;
+  font-weight: 700;
+  color: #222A35;
   user-select: none;
-  line-height: 1.05;
+  line-height: 1.1;
   letter-spacing: 0.02em;
 }
-
-/* 狀態文字間距美感調整 */
 .timer-status {
-  margin-top: 44px;
-  margin-bottom: 36px;
-  font-size: 1.18em;
-  color: #232323;
+  margin-top: 54px;
+  margin-bottom: 56px;
+  font-size: 1.33em;
+  color: #222A35;
   text-align: center;
   font-weight: 500;
   letter-spacing: 0.02em;
 }
-
-/* 按鈕群間距與排版 */
-.timer-btns,
-.timer-controls {
+.timer-btns {
   display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 18px;
+  gap: 26px;
+  width: 100%;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
 }
-.timer-btns .timer-btn {
-  min-width: 116px;
-}
-
-.timer-btn, .timer-control-btn {
-  font-size: 1.12em;
-  padding: 0.7em 1.5em;
+.timer-btn {
+  min-width: 130px;
+  padding: 0.85em 1.1em;
   border: none;
   border-radius: 999px;
-  background: #fde2b3;
-  color: #6a4e18;
+  background: #FFE5CC;
+  color: #222A35;
   font-weight: 700;
-  box-shadow: 0 2px 10px #fceadb;
+  font-size: 1.08em;
+  box-shadow: 0 2px 12px #f5e2d5;
   cursor: pointer;
-  transition: background 0.17s, transform 0.17s;
+  transition: background 0.13s, transform 0.13s;
+  margin-bottom: 0;
+  letter-spacing: 0.03em;
 }
-.timer-btn:hover, .timer-control-btn:hover {
-  background: #ffd591;
-  transform: scale(1.05);
+.timer-btn:hover,
+.timer-btn:focus {
+  background: #ffd5b3;
+  transform: translateY(-2px) scale(1.04);
 }
-.timer-btn:active, .timer-control-btn:active {
-  background: #fbc96b;
+.timer-btn:active {
+  background: #ffc899;
 }
-
-/* "自訂時間"單獨一行並置中 */
-.timer-btns .timer-btn.custom {
-  flex-basis: 100%;
-  margin-top: 4px;
+.timer-btn.custom {
+  margin-top: 22px;
+  width: 83%;
+  min-width: 190px;
+  display: block;
 }
-
-/* 自訂時間輸入區 */
 .timer-custom {
-  margin: 8px 0 18px 0;
+  margin: 12px 0 28px 0;
   display: flex;
-  gap: 10px;
+  gap: 12px;
   justify-content: center;
   align-items: center;
 }
@@ -131,16 +120,36 @@ body {
   font-size: 1em;
   text-align: center;
 }
-
+.timer-controls {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.timer-control-btn {
+  font-size: 1.08em;
+  padding: 0.7em 1.5em;
+  border: none;
+  border-radius: 999px;
+  background: #FFE5CC;
+  color: #222A35;
+  font-weight: 700;
+  box-shadow: 0 2px 10px #fceadb;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.timer-control-btn:hover {
+  background: #ffd5b3;
+  transform: scale(1.05);
+}
 .completionMessage {
-  margin: 38px 0 0 0;
+  margin: 40px 0 0 0;
   text-align: center;
 }
 .completionMessage .emoji {
   font-size: 3em;
 }
-
-/* 緊急動畫 */
 .pulse-animation {
   animation: pulse 2s infinite;
 }
@@ -150,8 +159,10 @@ body {
 }
 @media (max-width: 500px) {
   .timer-root { max-width: 98vw; }
-  .timer-circle-outer { margin-top: 16px; }
-  .timer-status { margin-top: 28px; margin-bottom: 20px; }
+  .timer-circle-outer { max-width: 85vw; }
+  .timer-btn { min-width: 35vw; font-size: 1em; }
+  .timer-btn.custom { min-width: 60vw; }
+  .timer-status { margin-top: 34px; margin-bottom: 34px; }
 }
 </style>
 </head>
@@ -247,7 +258,7 @@ function updateDisplay() {
         document.getElementById('statusText').textContent = '即將結束！';
     } else {
         document.getElementById('timeDisplay').classList.remove('pulse-animation');
-        document.getElementById('timeDisplay').style.color = '#232323';
+        document.getElementById('timeDisplay').style.color = '#222A35';
     }
 }
 
@@ -261,8 +272,8 @@ function pauseTimer() {
         document.getElementById('statusText').textContent = '計時器已暫停';
     } else {
         pauseBtn.textContent = '暫停';
-        pauseBtn.style.background = '#fde2b3';
-        pauseBtn.style.color = '#6a4e18';
+        pauseBtn.style.background = '#FFE5CC';
+        pauseBtn.style.color = '#222A35';
         const minutes = Math.floor(totalSeconds / 60);
         document.getElementById('statusText').textContent = `${minutes}分鐘對話練習進行中...`;
     }
@@ -275,7 +286,7 @@ function resetTimer() {
     isPaused = false;
     document.getElementById('timeDisplay').textContent = '00:00';
     document.getElementById('timeDisplay').classList.remove('pulse-animation');
-    document.getElementById('timeDisplay').style.color = '#232323';
+    document.getElementById('timeDisplay').style.color = '#222A35';
     document.getElementById('progressRing').style.setProperty('--progress', '0%');
     document.getElementById('statusText').textContent = '選擇練習時間開始';
     document.getElementById('timerDisplayContainer').style.display = '';
@@ -285,8 +296,8 @@ function resetTimer() {
     document.getElementById('completionMessage').style.display = 'none';
     const pauseBtn = document.getElementById('pauseBtn');
     pauseBtn.textContent = '暫停';
-    pauseBtn.style.background = '#fde2b3';
-    pauseBtn.style.color = '#6a4e18';
+    pauseBtn.style.background = '#FFE5CC';
+    pauseBtn.style.color = '#222A35';
 }
 
 function completeTimer() {
