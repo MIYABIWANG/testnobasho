@@ -1,163 +1,176 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>三人小組對話練習計時器</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&display=swap');
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: transparent;
-}
-body {
-  font-family: 'Noto Sans TC', sans-serif;
-}
-.timer-root {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 0 12px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.timer-circle-outer {
-  width: 100%;
-  max-width: 340px;
-  aspect-ratio: 1/1;
-  margin: 36px auto 0 auto;
-  background: conic-gradient(#FCEADB var(--progress, 0%), #FCEADB 0 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 32px 0 #f5e2d5, 0 2px 12px #fceadb;
-  position: relative;
-  transition: none;
-}
-.timer-circle-inner {
-  width: 74%;
-  aspect-ratio: 1/1;
-  background: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1.5px 13px #fceadb inset;
-}
-#timeDisplay {
-  width: 100%;
-  text-align: center;
-  font-size: 2.8em;
-  font-weight: 700;
-  color: #222A35;
-  user-select: none;
-  line-height: 1.1;
-  letter-spacing: 0.02em;
-}
-.timer-status {
-  margin-top: 54px;
-  margin-bottom: 44px;
-  font-size: 1.33em;
-  color: #222A35;
-  text-align: center;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
-.timer-btns {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 22px;
-  width: 100%;
-  margin-bottom: 30px;
-  flex-wrap: nowrap;
-}
-.timer-btn {
-  min-width: 100px;
-  padding: 0.85em 1.1em;
-  border: none;
-  border-radius: 999px;
-  background: #FCEADB;
-  color: #222A35;
-  font-weight: 700;
-  font-size: 1.08em;
-  box-shadow: 0 2px 12px #f5e2d5;
-  cursor: pointer;
-  transition: background 0.13s, transform 0.13s;
-  letter-spacing: 0.03em;
-}
-.timer-btn:hover,
-.timer-btn:focus {
-  background: #ffd5b3;
-  transform: translateY(-2px) scale(1.04);
-}
-.timer-btn:active {
-  background: #ffc899;
-}
-.timer-custom {
-  margin: 12px 0 28px 0;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
-}
-.timer-custom input {
-  width: 4em;
-  padding: 0.5em;
-  border-radius: 0.6em;
-  border: 1px solid #e5e7eb;
-  font-size: 1em;
-  text-align: center;
-}
-.timer-controls {
-  display: flex;
-  gap: 18px;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.timer-control-btn {
-  font-size: 1.08em;
-  padding: 0.7em 1.5em;
-  border: none;
-  border-radius: 999px;
-  background: #FCEADB;
-  color: #222A35;
-  font-weight: 700;
-  box-shadow: 0 2px 10px #fceadb;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
-}
-.timer-control-btn:hover {
-  background: #ffd5b3;
-  transform: scale(1.05);
-}
-.completionMessage {
-  margin: 40px 0 0 0;
-  text-align: center;
-}
-.completionMessage .emoji {
-  font-size: 3em;
-}
-.pulse-animation {
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-@media (max-width: 500px) {
-  .timer-root { max-width: 98vw; }
-  .timer-circle-outer { max-width: 85vw; }
-  .timer-btn { min-width: 25vw; font-size: 1em; }
-  .timer-status { margin-top: 34px; margin-bottom: 20px; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三人小組對話練習計時器</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&display=swap');
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .timer-root {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .timer-circle-outer {
+      width: 340px;
+      height: 340px;
+      background: conic-gradient(#FCEADB var(--progress, 0%), #FCEADB 0 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 32px 0 #f7e6d2;
+      margin-top: 36px;
+    }
+    .timer-circle-inner {
+      width: 230px;
+      height: 230px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 16px #ffe9d6 inset;
+    }
+    #timeDisplay {
+      width: 100%;
+      text-align: center;
+      font-size: 3em;
+      font-weight: 700;
+      color: #232b36;
+      user-select: none;
+      letter-spacing: 0.01em;
+    }
+    .timer-status {
+      margin-top: 56px;
+      margin-bottom: 56px;
+      font-size: 1.32em;
+      color: #232b36;
+      text-align: center;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .timer-btns {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      width: 100%;
+      margin-bottom: 0;
+      flex-wrap: nowrap;
+    }
+    .timer-btn {
+      min-width: 140px;
+      padding: 0.9em 1.2em;
+      border: none;
+      border-radius: 999px;
+      background: #FCEADB;
+      color: #232b36;
+      font-weight: 700;
+      font-size: 1.15em;
+      box-shadow: 0 2px 12px #faefdf;
+      cursor: pointer;
+      transition: background 0.13s, transform 0.13s;
+      letter-spacing: 0.03em;
+    }
+    .timer-btn:hover,
+    .timer-btn:focus {
+      background: #ffe3c5;
+      transform: translateY(-2px) scale(1.04);
+    }
+    .timer-btn:active {
+      background: #ffd9ae;
+    }
+    .timer-custom {
+      margin: 36px 0 0 0;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+    }
+    .timer-custom input {
+      width: 4em;
+      padding: 0.5em;
+      border-radius: 0.6em;
+      border: 1px solid #e5e7eb;
+      font-size: 1em;
+      text-align: center;
+    }
+    .timer-controls {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 36px;
+    }
+    .timer-control-btn {
+      font-size: 1.08em;
+      padding: 0.7em 1.5em;
+      border: none;
+      border-radius: 999px;
+      background: #FCEADB;
+      color: #232b36;
+      font-weight: 700;
+      box-shadow: 0 2px 10px #fceadb;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .timer-control-btn:hover {
+      background: #ffe3c5;
+      transform: scale(1.05);
+    }
+    .completionMessage {
+      margin: 40px 0 0 0;
+      text-align: center;
+    }
+    .completionMessage .emoji {
+      font-size: 3em;
+    }
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    @media (max-width: 500px) {
+      .timer-root { max-width: 98vw; }
+      .timer-circle-outer {
+        width: 90vw;
+        height: 90vw;
+        min-width: 180px;
+        min-height: 180px;
+        max-width: 98vw;
+        max-height: 98vw;
+      }
+      .timer-circle-inner {
+        width: 62vw;
+        height: 62vw;
+        min-width: 120px;
+        min-height: 120px;
+        max-width: 80vw;
+        max-height: 80vw;
+      }
+      .timer-btn {
+        min-width: 28vw;
+        font-size: 1em;
+      }
+      .timer-status { margin-top: 34px; margin-bottom: 34px; }
+    }
+  </style>
 </head>
 <body>
 <div class="timer-root">
@@ -196,6 +209,7 @@ let totalSeconds = 0;
 let remainingSeconds = 0;
 let isPaused = false;
 
+// 保證圓圈大小一直都一樣
 function startTimer(minutes, type = '練習') {
     clearInterval(timerInterval);
     totalSeconds = minutes * 60;
@@ -207,7 +221,6 @@ function startTimer(minutes, type = '練習') {
     document.getElementById('completionMessage').style.display = 'none';
     document.getElementById('timerDisplayContainer').style.display = '';
     document.getElementById('statusText').textContent = `${minutes}分鐘對話${type}進行中...`;
-    //【關鍵】不改變圓圈大小，因為圓圈完全沒有 display: none，也沒換 class
     updateDisplay();
     timerInterval = setInterval(() => {
         if (!isPaused) {
@@ -252,7 +265,7 @@ function updateDisplay() {
         document.getElementById('statusText').textContent = '即將結束！';
     } else {
         document.getElementById('timeDisplay').classList.remove('pulse-animation');
-        document.getElementById('timeDisplay').style.color = '#222A35';
+        document.getElementById('timeDisplay').style.color = '#232b36';
     }
 }
 
@@ -267,7 +280,7 @@ function pauseTimer() {
     } else {
         pauseBtn.textContent = '暫停';
         pauseBtn.style.background = '#FCEADB';
-        pauseBtn.style.color = '#222A35';
+        pauseBtn.style.color = '#232b36';
         const minutes = Math.floor(totalSeconds / 60);
         document.getElementById('statusText').textContent = `${minutes}分鐘對話練習進行中...`;
     }
@@ -280,7 +293,7 @@ function resetTimer() {
     isPaused = false;
     document.getElementById('timeDisplay').textContent = '00:00';
     document.getElementById('timeDisplay').classList.remove('pulse-animation');
-    document.getElementById('timeDisplay').style.color = '#222A35';
+    document.getElementById('timeDisplay').style.color = '#232b36';
     document.getElementById('progressRing').style.setProperty('--progress', '0%');
     document.getElementById('statusText').textContent = '選擇練習時間開始';
     document.getElementById('timerDisplayContainer').style.display = '';
@@ -291,13 +304,12 @@ function resetTimer() {
     const pauseBtn = document.getElementById('pauseBtn');
     pauseBtn.textContent = '暫停';
     pauseBtn.style.background = '#FCEADB';
-    pauseBtn.style.color = '#222A35';
+    pauseBtn.style.color = '#232b36';
 }
 
 function completeTimer() {
     clearInterval(timerInterval);
     playCompletionSound();
-    // 還是保留圓圈那一區，不要隱藏主容器，這樣大小永遠不變
     document.getElementById('timerDisplayContainer').style.display = '';
     document.getElementById('controlButtons').style.display = 'none';
     document.getElementById('completionMessage').style.display = '';
