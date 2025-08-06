@@ -4,329 +4,305 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>三人小組對話練習計時器</title>
-    <!-- 保留 Tailwind CDN，但主體樣式用原生 CSS 保底 -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            min-height: 100vh;
-            width: 100vw;
             background: transparent;
         }
-        .timer-circle {
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .timer-root {
+            /* 這裡控制縮放基準，改這個最大寬高即可 */
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0;
+            /* 讓所有內容置中 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .timer-circle-outer {
+            width: 100%;
+            aspect-ratio: 1/1;
+            max-width: 100vw;
             background: conic-gradient(#E67E22 var(--progress, 0%), #FCEADB var(--progress, 0%));
             border-radius: 50%;
-            width: 16rem;
-            height: 16rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto;
             box-shadow: 0 4px 24px #e5e7eb;
-            transition: width 0.3s, height 0.3s;
         }
-        .timer-inner {
-            background: white;
+        .timer-circle-inner {
+            width: 70%;
+            aspect-ratio: 1/1;
+            background: #fff;
             border-radius: 50%;
-            width: 12rem;
-            height: 12rem;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 16px #ddd inset;
-            margin: auto;
         }
         #timeDisplay {
             width: 100%;
             text-align: center;
-            font-size: 3rem;
+            font-size: 2.6em;
             font-weight: bold;
             color: #333;
             user-select: none;
+            line-height: 1;
         }
+        /* 狀態文字與按鈕組之間的間距用百分比，RWD時永遠等比例 */
+        .timer-status {
+            margin: 6% 0 0 0;
+            font-size: 1.2em;
+            color: #5a5a5a;
+            text-align: center;
+        }
+        .timer-btns,
+        .timer-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4%;
+            justify-content: center;
+            align-items: center;
+            margin: 5% 0;
+        }
+        .timer-btn, .timer-control-btn {
+            font-size: 1.1em;
+            padding: 0.8em 2em;
+            border: none;
+            border-radius: 999px;
+            background: #fde2b3;
+            color: #6a4e18;
+            font-weight: 600;
+            box-shadow: 0 2px 10px #fceadb;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .timer-btn:hover, .timer-control-btn:hover {
+            background: #ffd591;
+            transform: scale(1.05);
+        }
+        .timer-custom {
+            margin: 4% 0 0 0;
+            display: flex;
+            gap: 4%;
+            justify-content: center;
+            align-items: center;
+        }
+        .timer-custom input {
+            width: 4em;
+            padding: 0.5em;
+            border-radius: 0.6em;
+            border: 1px solid #e5e7eb;
+            font-size: 1em;
+            text-align: center;
+        }
+        .completionMessage {
+            margin: 8% 0 0 0;
+            text-align: center;
+        }
+        .completionMessage .emoji {
+            font-size: 3em;
+        }
+        /* 緊急動畫 */
         .pulse-animation {
             animation: pulse 2s infinite;
         }
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.08); }
         }
-        .bounce-in {
-            animation: bounceIn 0.6s ease-out;
-        }
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            50% { transform: scale(1.05); }
-            70% { transform: scale(0.9); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .shake {
-            animation: shake 0.5s ease-in-out;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-        .responsive-root {
-            width: 100%;
-            height: 100%;
-            max-width: 100vw;
-            max-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 1.5rem;
-            box-sizing: border-box;
-        }
-        @media (max-width: 700px) {
-            .timer-circle {
-                width: 70vw;
-                height: 70vw;
-            }
-            .timer-inner {
-                width: 52vw;
-                height: 52vw;
-            }
-            #timeDisplay {
-                font-size: 2.3rem;
-            }
-        }
-        @media (max-width: 400px) {
-            .timer-circle {
-                width: 90vw;
-                height: 90vw;
-            }
-            .timer-inner {
-                width: 66vw;
-                height: 66vw;
-            }
-            #timeDisplay {
-                font-size: 1.5rem;
-            }
+        @media (max-width: 500px) {
+            .timer-root { max-width: 98vw; }
         }
     </style>
 </head>
 <body>
-    <div class="responsive-root">
-        <!-- 計時器顯示區域 -->
-        <div id="timerDisplayContainer" class="mb-8">
-            <div class="relative mb-6 flex justify-center items-center w-full" style="max-width:30rem;margin:auto;">
-                <!-- 外圈進度環 -->
-                <div id="progressRing" class="timer-circle" style="--progress: 0%">
-                    <!-- 內圈白色背景 -->
-                    <div class="timer-inner">
-                        <!-- 時間顯示 -->
-                        <div id="timeDisplay">
-                            00:00
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- 狀態文字 -->
-            <p id="statusText" class="text-xl text-gray-600 mb-6" style="text-align:center;">
-                選擇練習時間開始
-            </p>
-        </div>
-        <!-- 時間選擇按鈕 -->
-        <div id="timeButtons" class="flex gap-4 justify-center h-16 items-center flex-wrap">
-            <button onclick="startTimer(20, '練習')" class="bg-orange-200 hover:bg-orange-300 text-gray-700 font-semibold py-4 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
-                20分鐘
-            </button>
-            <button onclick="startTimer(10, '討論')" class="bg-orange-200 hover:bg-orange-300 text-gray-700 font-semibold py-4 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
-                10分鐘
-            </button>
-            <button onclick="showCustomInput()" class="bg-orange-200 hover:bg-orange-300 text-gray-700 font-semibold py-4 px-6 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
-                自訂時間
-            </button>
-        </div>
-        <!-- 自訂時間輸入 -->
-        <div id="customTimeInput" class="hidden mb-6">
-            <div class="flex gap-2 justify-center items-center">
-                <input type="number" id="customMinutes" min="1" max="60" placeholder="分鐘" class="w-20 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-amber-400">
-                <button onclick="startCustomTimer()" class="bg-amber-200 hover:bg-amber-300 text-gray-700 font-semibold py-2 px-4 rounded-full shadow-lg transition-all duration-200">
-                    開始
-                </button>
-                <button onclick="hideCustomInput()" class="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-all duration-200">
-                    取消
-                </button>
+<div class="timer-root">
+    <div id="timerDisplayContainer">
+        <div class="timer-circle-outer" id="progressRing" style="--progress: 0%">
+            <div class="timer-circle-inner">
+                <div id="timeDisplay">00:00</div>
             </div>
         </div>
-        <!-- 控制按鈕 -->
-        <div id="controlButtons" class="hidden flex gap-4 justify-center h-16 items-center">
-            <button id="pauseBtn" onclick="pauseTimer()" class="bg-amber-200 hover:bg-amber-300 text-gray-700 font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-200">
-                暫停
-            </button>
-            <button onclick="resetTimer()" class="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-200">
-                重置
-            </button>
-        </div>
-        <!-- 完成提示 -->
-        <div id="completionMessage" class="hidden text-center">
-            <div class="text-6xl mb-4">🎉</div>
-            <h2 class="text-2xl font-bold text-green-600 mb-4">對話練習完成！</h2>
-            <p class="text-gray-600 mb-6">希望這次練習對大家都有幫助</p>
-            <button onclick="resetTimer()" class="bg-amber-200 hover:bg-amber-300 text-gray-700 font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-200">
-                開始新的練習
-            </button>
-        </div>
+        <div id="statusText" class="timer-status">選擇練習時間開始</div>
     </div>
-    <script>
-        let timerInterval;
-        let totalSeconds = 0;
-        let remainingSeconds = 0;
-        let isPaused = false;
+    <div id="timeButtons" class="timer-btns">
+        <button class="timer-btn" onclick="startTimer(20, '練習')">20分鐘</button>
+        <button class="timer-btn" onclick="startTimer(10, '討論')">10分鐘</button>
+        <button class="timer-btn" onclick="showCustomInput()">自訂時間</button>
+    </div>
+    <div id="customTimeInput" class="timer-custom" style="display:none;">
+        <input type="number" id="customMinutes" min="1" max="60" placeholder="分鐘">
+        <button class="timer-btn" onclick="startCustomTimer()">開始</button>
+        <button class="timer-btn" onclick="hideCustomInput()" style="background:#bbb;color:#fff;">取消</button>
+    </div>
+    <div id="controlButtons" class="timer-controls" style="display:none;">
+        <button id="pauseBtn" class="timer-control-btn" onclick="pauseTimer()">暫停</button>
+        <button class="timer-control-btn" onclick="resetTimer()" style="background:#bbb;color:#fff;">重置</button>
+    </div>
+    <div id="completionMessage" class="completionMessage" style="display:none;">
+        <div class="emoji">🎉</div>
+        <h2 class="text-2xl font-bold" style="color:#15803d;margin:0.7em 0 0.5em 0;">對話練習完成！</h2>
+        <p style="color:#666;margin-bottom:1.2em;">希望這次練習對大家都有幫助</p>
+        <button class="timer-btn" onclick="resetTimer()">開始新的練習</button>
+    </div>
+</div>
+<script>
+let timerInterval;
+let totalSeconds = 0;
+let remainingSeconds = 0;
+let isPaused = false;
 
-        function startTimer(minutes, type = '練習') {
-            clearInterval(timerInterval);
-            totalSeconds = minutes * 60;
-            remainingSeconds = totalSeconds;
-            isPaused = false;
+function startTimer(minutes, type = '練習') {
+    clearInterval(timerInterval);
+    totalSeconds = minutes * 60;
+    remainingSeconds = totalSeconds;
+    isPaused = false;
 
-            document.getElementById('timeButtons').classList.add('hidden');
-            document.getElementById('customTimeInput').classList.add('hidden');
-            document.getElementById('controlButtons').classList.remove('hidden');
-            document.getElementById('completionMessage').classList.add('hidden');
-            document.getElementById('timerDisplayContainer').classList.remove('hidden');
+    document.getElementById('timeButtons').style.display = 'none';
+    document.getElementById('customTimeInput').style.display = 'none';
+    document.getElementById('controlButtons').style.display = '';
+    document.getElementById('completionMessage').style.display = 'none';
+    document.getElementById('timerDisplayContainer').style.display = '';
 
-            document.getElementById('statusText').textContent = `${minutes}分鐘對話${type}進行中...`;
+    document.getElementById('statusText').textContent = `${minutes}分鐘對話${type}進行中...`;
 
+    updateDisplay();
+    timerInterval = setInterval(() => {
+        if (!isPaused) {
+            remainingSeconds--;
             updateDisplay();
-            timerInterval = setInterval(() => {
-                if (!isPaused) {
-                    remainingSeconds--;
-                    updateDisplay();
 
-                    if (remainingSeconds <= 0) {
-                        completeTimer();
-                    }
-                }
-            }, 1000);
-        }
-
-        function showCustomInput() {
-            document.getElementById('customTimeInput').classList.remove('hidden');
-            document.getElementById('customMinutes').focus();
-        }
-
-        function hideCustomInput() {
-            document.getElementById('customTimeInput').classList.add('hidden');
-            document.getElementById('customMinutes').value = '';
-        }
-
-        function startCustomTimer() {
-            const minutes = parseInt(document.getElementById('customMinutes').value);
-            if (minutes && minutes > 0 && minutes <= 60) {
-                startTimer(minutes, '練習');
-            } else {
-                alert('請輸入1-60之間的分鐘數');
+            if (remainingSeconds <= 0) {
+                completeTimer();
             }
         }
+    }, 1000);
+}
 
-        function updateDisplay() {
-            const minutes = Math.floor(remainingSeconds / 60);
-            const seconds = remainingSeconds % 60;
-            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('timeDisplay').textContent = timeString;
+function showCustomInput() {
+    document.getElementById('customTimeInput').style.display = '';
+    document.getElementById('customMinutes').focus();
+}
 
-            // 更新進度環
-            const progress = ((totalSeconds - remainingSeconds) / totalSeconds) * 100;
-            document.getElementById('progressRing').style.setProperty('--progress', `${progress}%`);
+function hideCustomInput() {
+    document.getElementById('customTimeInput').style.display = 'none';
+    document.getElementById('customMinutes').value = '';
+}
 
-            // 最後10秒添加緊急效果
-            if (remainingSeconds <= 10 && remainingSeconds > 0) {
-                document.getElementById('timeDisplay').classList.add('pulse-animation');
-                document.getElementById('timeDisplay').style.color = '#dc2626'; // text-red-600
-                document.getElementById('statusText').textContent = '即將結束！';
-            } else {
-                document.getElementById('timeDisplay').classList.remove('pulse-animation');
-                document.getElementById('timeDisplay').style.color = '#333';
-            }
-        }
+function startCustomTimer() {
+    const minutes = parseInt(document.getElementById('customMinutes').value);
+    if (minutes && minutes > 0 && minutes <= 60) {
+        startTimer(minutes, '練習');
+    } else {
+        alert('請輸入1-60之間的分鐘數');
+    }
+}
 
-        function pauseTimer() {
-            isPaused = !isPaused;
-            const pauseBtn = document.getElementById('pauseBtn');
+function updateDisplay() {
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+    const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    document.getElementById('timeDisplay').textContent = timeString;
 
-            if (isPaused) {
-                pauseBtn.textContent = '繼續';
-                pauseBtn.classList.remove('bg-amber-200', 'hover:bg-amber-300');
-                pauseBtn.classList.add('bg-green-200', 'hover:bg-green-300');
-                document.getElementById('statusText').textContent = '計時器已暫停';
-            } else {
-                pauseBtn.textContent = '暫停';
-                pauseBtn.classList.remove('bg-green-200', 'hover:bg-green-300');
-                pauseBtn.classList.add('bg-amber-200', 'hover:bg-amber-300');
-                const minutes = Math.floor(totalSeconds / 60);
-                document.getElementById('statusText').textContent = `${minutes}分鐘對話練習進行中...`;
-            }
-        }
+    // 更新進度環
+    const progress = ((totalSeconds - remainingSeconds) / totalSeconds) * 100;
+    document.getElementById('progressRing').style.setProperty('--progress', `${progress}%`);
 
-        function resetTimer() {
-            clearInterval(timerInterval);
-            remainingSeconds = 0;
-            totalSeconds = 0;
-            isPaused = false;
+    // 最後10秒添加緊急效果
+    if (remainingSeconds <= 10 && remainingSeconds > 0) {
+        document.getElementById('timeDisplay').classList.add('pulse-animation');
+        document.getElementById('timeDisplay').style.color = '#dc2626'; // 紅色
+        document.getElementById('statusText').textContent = '即將結束！';
+    } else {
+        document.getElementById('timeDisplay').classList.remove('pulse-animation');
+        document.getElementById('timeDisplay').style.color = '#333';
+    }
+}
 
-            document.getElementById('timeDisplay').textContent = '00:00';
-            document.getElementById('timeDisplay').classList.remove('pulse-animation');
-            document.getElementById('timeDisplay').style.color = '#333';
-            document.getElementById('progressRing').style.setProperty('--progress', '0%');
-            document.getElementById('statusText').textContent = '選擇練習時間開始';
+function pauseTimer() {
+    isPaused = !isPaused;
+    const pauseBtn = document.getElementById('pauseBtn');
 
-            document.getElementById('timerDisplayContainer').classList.remove('hidden');
-            document.getElementById('timeButtons').classList.remove('hidden');
-            document.getElementById('controlButtons').classList.add('hidden');
-            document.getElementById('customTimeInput').classList.add('hidden');
-            document.getElementById('completionMessage').classList.add('hidden');
+    if (isPaused) {
+        pauseBtn.textContent = '繼續';
+        pauseBtn.style.background = '#bbf7d0'; // 綠色
+        pauseBtn.style.color = '#166534';
+        document.getElementById('statusText').textContent = '計時器已暫停';
+    } else {
+        pauseBtn.textContent = '暫停';
+        pauseBtn.style.background = '#fde2b3';
+        pauseBtn.style.color = '#6a4e18';
+        const minutes = Math.floor(totalSeconds / 60);
+        document.getElementById('statusText').textContent = `${minutes}分鐘對話練習進行中...`;
+    }
+}
 
-            const pauseBtn = document.getElementById('pauseBtn');
-            pauseBtn.textContent = '暫停';
-            pauseBtn.classList.remove('bg-green-200', 'hover:bg-green-300');
-            pauseBtn.classList.add('bg-amber-200', 'hover:bg-amber-300');
-        }
+function resetTimer() {
+    clearInterval(timerInterval);
+    remainingSeconds = 0;
+    totalSeconds = 0;
+    isPaused = false;
 
-        function completeTimer() {
-            clearInterval(timerInterval);
+    document.getElementById('timeDisplay').textContent = '00:00';
+    document.getElementById('timeDisplay').classList.remove('pulse-animation');
+    document.getElementById('timeDisplay').style.color = '#333';
+    document.getElementById('progressRing').style.setProperty('--progress', '0%');
+    document.getElementById('statusText').textContent = '選擇練習時間開始';
 
-            playCompletionSound();
+    document.getElementById('timerDisplayContainer').style.display = '';
+    document.getElementById('timeButtons').style.display = '';
+    document.getElementById('controlButtons').style.display = 'none';
+    document.getElementById('customTimeInput').style.display = 'none';
+    document.getElementById('completionMessage').style.display = 'none';
 
-            document.getElementById('timerDisplayContainer').classList.add('hidden');
-            document.getElementById('controlButtons').classList.add('hidden');
+    const pauseBtn = document.getElementById('pauseBtn');
+    pauseBtn.textContent = '暫停';
+    pauseBtn.style.background = '#fde2b3';
+    pauseBtn.style.color = '#6a4e18';
+}
 
-            document.getElementById('completionMessage').classList.remove('hidden');
-            document.getElementById('completionMessage').classList.add('bounce-in');
+function completeTimer() {
+    clearInterval(timerInterval);
 
+    playCompletionSound();
+
+    document.getElementById('timerDisplayContainer').style.display = 'none';
+    document.getElementById('controlButtons').style.display = 'none';
+
+    document.getElementById('completionMessage').style.display = '';
+}
+
+function playCompletionSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const frequencies = [800, 1000, 1200];
+        frequencies.forEach((freq, index) => {
             setTimeout(() => {
-                document.getElementById('completionMessage').classList.remove('bounce-in');
-            }, 1000);
-        }
-
-        function playCompletionSound() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const frequencies = [800, 1000, 1200];
-                frequencies.forEach((freq, index) => {
-                    setTimeout(() => {
-                        const oscillator = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
-                        oscillator.type = 'sine';
-                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                        oscillator.start(audioContext.currentTime);
-                        oscillator.stop(audioContext.currentTime + 0.3);
-                    }, index * 200);
-                });
-            } catch (error) {
-                console.log('無法播放提示音:', error);
-            }
-        }
-    </script>
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }, index * 200);
+        });
+    } catch (error) {
+        // do nothing on fail
+    }
+}
+</script>
 </body>
 </html>
